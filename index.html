@@ -11,9 +11,12 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -284,7 +287,15 @@
             <input type="text" id="taskInput" placeholder="What needs to be done?" />
             <button id="addBtn">Add Task</button>
         </div>
-
+<div style="text-align: center; margin-bottom: 20px;">
+    <input type="file" id="bgImageInput" accept="image/*" style="display: none;">
+    <button id="bgImageBtn" style="padding: 8px 20px; background: #667eea; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 0.9rem;">
+        🖼️ Change Background
+    </button>
+    <button id="resetBgBtn" style="padding: 8px 20px; background: #ff4757; color: white; border: none; border-radius: 20px; cursor: pointer; font-size: 0.9rem; margin-left: 10px;">
+        ↺ Reset Background
+    </button>
+</div>
         <div class="filter-section">
             <button class="filter-btn active" data-filter="all">All</button>
             <button class="filter-btn" data-filter="active">Active</button>
@@ -441,6 +452,47 @@
 
         // Initial render
         renderTasks();
+        // Background image upload
+const bgImageInput = document.getElementById('bgImageInput');
+const bgImageBtn = document.getElementById('bgImageBtn');
+const resetBgBtn = document.getElementById('resetBgBtn');
+
+// Load saved background on page load
+const savedBg = localStorage.getItem('backgroundImage');
+if (savedBg) {
+    document.body.style.background = `url(${savedBg})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundAttachment = 'fixed';
+}
+
+// Click button to trigger file input
+bgImageBtn.addEventListener('click', () => {
+    bgImageInput.click();
+});
+
+// Handle image selection
+bgImageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const imageUrl = event.target.result;
+            document.body.style.background = `url(${imageUrl})`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundAttachment = 'fixed';
+            localStorage.setItem('backgroundImage', imageUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Reset to original gradient
+resetBgBtn.addEventListener('click', () => {
+    document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+    localStorage.removeItem('backgroundImage');
+});
     </script>
 </body>
 </html>
